@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  db:
+    container_name: 'pharmacy_cart_postgres'
+    image: 'postgres:14'
+    restart: always
+    env_file:
+      - ./.env
+    command: postgres -p ${POSTGRES_PORT}
+    ports:
+      - '${POSTGRES_PORT}:${POSTGRES_PORT}'
+    volumes:
+      - ./database_data:/var/lib/postgresql/data
+      - ./database/postgresql-docker-image/create_tables.sql:/docker-entrypoint-initdb.d/1-create_tables.sql:ro
+      - ./database/postgresql-docker-image/fill_tables.sql:/docker-entrypoint-initdb.d/2-fill_tables.sql:ro
+      - ./database/postgresql-docker-image/generated_data:/generated_data
+      - ./database/postgresql-docker-image/specialties.txt:/specialties.txt
